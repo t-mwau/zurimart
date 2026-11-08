@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products - Zurimart</title>
+</head>
+<body>
+
+<p>
+<a href="index.html">Home</a> |
+<a href="about.html">About</a> |
+<a href="services.html">Services</a> |
+<a href="products.html">Products</a> |
+<a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+</p>
+
+<h1><marquee behavior="scroll" direction="left">Our Products</marquee></h1>
+
+<p><b>Zurimart</b> offers quality and affordable products. Browse the list below and add what you need to your cart.</p>
+
+<p>
+<label for="category-filter"><b>Filter by category:</b></label>
+<select id="category-filter">
+  <option value="All">All</option>
+  <option value="Groceries">Groceries</option>
+  <option value="Household">Household</option>
+  <option value="Personal Care">Personal Care</option>
+</select>
+</p>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Price (KSh)</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="product-list">
+    <tr data-category="Groceries">
+      <td>Maize Flour (2 kg)</td>
+      <td>Groceries</td>
+      <td>150</td>
+      <td><button onclick="addToCart('Maize Flour (2 kg)', 150)">Add to Cart</button></td>
+    </tr>
+    <tr data-category="Groceries">
+      <td>Cooking Oil (1 litre)</td>
+      <td>Groceries</td>
+      <td>320</td>
+      <td><button onclick="addToCart('Cooking Oil (1 litre)', 320)">Add to Cart</button></td>
+    </tr>
+    <tr data-category="Groceries">
+      <td>Sugar (1 kg)</td>
+      <td>Groceries</td>
+      <td>160</td>
+      <td><button onclick="addToCart('Sugar (1 kg)', 160)">Add to Cart</button></td>
+    </tr>
+    <tr data-category="Household">
+      <td>Laundry Detergent (1 kg)</td>
+      <td>Household</td>
+      <td>250</td>
+      <td><button onclick="addToCart('Laundry Detergent (1 kg)', 250)">Add to Cart</button></td>
+    </tr>
+    <tr data-category="Household">
+      <td>Dish Soap (500 ml)</td>
+      <td>Household</td>
+      <td>120</td>
+      <td><button onclick="addToCart('Dish Soap (500 ml)', 120)">Add to Cart</button></td>
+    </tr>
+    <tr data-category="Personal Care">
+      <td>Bath Soap (Pack of 3)</td>
+      <td>Personal Care</td>
+      <td>180</td>
+      <td><button onclick="addToCart('Bath Soap (Pack of 3)', 180)">Add to Cart</button></td>
+    </tr>
+    <tr data-category="Personal Care">
+      <td>Toothpaste (100 ml)</td>
+      <td>Personal Care</td>
+      <td>140</td>
+      <td><button onclick="addToCart('Toothpaste (100 ml)', 140)">Add to Cart</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<p id="message"></p>
+
+<p><b>Zurimart: quality, convenience, and trust in every purchase.</b></p>
+
+<script>
+  var CART_KEY = "zurimartCart";
+
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
+
+  function updateCount() {
+    var cart = getCart();
+    var total = 0;
+    for (var i = 0; i < cart.length; i++) {
+      total += cart[i].quantity;
+    }
+    document.getElementById("cart-count").textContent = total;
+  }
+
+  function addToCart(name, price) {
+    var cart = getCart();
+    var found = false;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].name === name) {
+        cart[i].quantity += 1;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      cart.push({ name: name, price: price, quantity: 1 });
+    }
+    saveCart(cart);
+    updateCount();
+    document.getElementById("message").textContent = name + " added to your cart.";
+  }
+
+  document.getElementById("category-filter").addEventListener("change", function () {
+    var selected = this.value;
+    var rows = document.querySelectorAll("#product-list tr");
+    for (var i = 0; i < rows.length; i++) {
+      var show = selected === "All" || rows[i].getAttribute("data-category") === selected;
+      rows[i].style.display = show ? "" : "none";
+    }
+  });
+
+  updateCount();
+</script>
+
+</body>
+</html>
